@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Syntax highlighting theme (light/dark) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/{{ hljs_theme }}.min.css">
+
+    <!-- MathJax: disable auto-typeset so we control timing after DOM manipulation -->
+    <script>
+        MathJax = {
+            startup: { typeset: false },
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+
+    <!-- Syntax highlighting engine -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+    <!-- Mermaid diagram renderer -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --code-bg: #f5f5f5;
+            --border-color: #e0e0e0;
+            --link-color: #0066cc;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1e1e1e;
+            --text-color: #d4d4d4;
+            --code-bg: #2d2d2d;
+            --border-color: #404040;
+            --link-color: #6db3f2;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.3em;
+        }
+
+        code {
+            background-color: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+        }
+
+        /* hljs overrides background when theme applies */
+        pre code.hljs {
+            background: none;
+            padding: 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1em 0;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--code-bg);
+        }
+
+        a {
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        blockquote {
+            border-left: 4px solid var(--border-color);
+            margin: 1em 0;
+            padding-left: 1em;
+            color: #666;
+        }
+
+        .math-display {
+            overflow-x: auto;
+            margin: 1em 0;
+            text-align: center;
+        }
+
+        .svg-block {
+            margin: 1em 0;
+            text-align: center;
+        }
+
+        .svg-block svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Mermaid diagrams */
+        .mermaid {
+            margin: 1em 0;
+            text-align: center;
+        }
+    </style>
+</head>
+<body data-theme="{{ theme }}">
+    {{ content }}
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var dark = document.body.dataset.theme === 'dark';
+
+        // 1. Replace ```svg code blocks with inline SVG
+        document.querySelectorAll('pre > code.language-svg').forEach(function (code) {
+            var div = document.createElement('div');
+            div.className = 'svg-block';
+            div.innerHTML = code.textContent;
+            code.parentElement.replaceWith(div);
+        });
+
+        // 2. Replace ```mermaid code blocks with mermaid divs
+        var mermaidDivs = [];
+        document.querySelectorAll('pre > code.language-mermaid').forEach(function (code) {
+            var div = document.createElement('div');
+            div.className = 'mermaid';
+            div.textContent = code.textContent;
+            code.parentElement.replaceWith(div);
+            mermaidDivs.push(div);
+        });
+
+        // 3. Syntax-highlight remaining fenced code blocks
+        document.querySelectorAll('pre > code').forEach(function (el) {
+            hljs.highlightElement(el);
+        });
+
+        // 4. Initialize and run Mermaid on extracted divs
+        if (mermaidDivs.length > 0) {
+            mermaid.initialize({ startOnLoad: false, theme: dark ? 'dark' : 'default' });
+            mermaid.run({ nodes: mermaidDivs });
+        }
+
+        // 5. Typeset math after DOM manipulation is complete
+        MathJax.startup.promise.then(function () {
+            return MathJax.typesetPromise();
+        }).catch(function (err) { console.error('MathJax error:', err); });
+    });
+    </script>
+</body>
+</html>

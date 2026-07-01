@@ -1,0 +1,9 @@
+name: mdreader
+channels:
+  - conda-forge
+dependencies:
+  - python>=3.10
+  - pyside6
+  - markdown-it-py
+  - watchdog
+  - pip
