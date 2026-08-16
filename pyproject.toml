@@ -1,6 +1,6 @@
 [project]
 name = "mdreader"
-version = "0.1.1"
+version = "0.1.2"
 description = "A lightweight Markdown viewer with LaTeX equation rendering"
 readme = "README.md"
 license = {text = "MIT"}
@@ -21,3 +21,6 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["."]
+
+[tool.setuptools.package-data]
+mdreader = ["resources/*.html"]

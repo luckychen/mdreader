@@ -12,6 +12,7 @@ from PySide6.QtWebEngineCore import QWebEngineSettings
 from PySide6.QtCore import QFileSystemWatcher, QSettings, Slot
 from PySide6.QtGui import QAction
 
+from . import __version__
 from .renderer import MarkdownRenderer
 
 
@@ -187,7 +188,7 @@ class MarkdownViewer(QMainWindow):
         QMessageBox.about(
             self,
             "About mdreader",
-            "mdreader v0.1.0\n\n"
+            f"mdreader v{__version__}\n\n"
             "A lightweight Markdown viewer with LaTeX equation rendering.\n\n"
             "Licensed under MIT License."
         )
